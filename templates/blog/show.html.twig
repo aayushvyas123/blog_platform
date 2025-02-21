@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ blog.title }}{% endblock %}
+
+{% block body %}
+    <h1>{{ blog.title }}</h1>
+    <p>{{ blog.description }}</p>
+
+    {% if blog.image %}
+        <img src="{{ asset('uploads/blog/' ~ blog.image) }}" alt="Blog Image" class="img-fluid">
+    {% endif %}
+
+    <hr>
+
+    <h2>Comments</h2>
+    {% for comment in blog.comments %}
+        <div class="card my-2">
+            <div class="card-body">
+                <p class="card-text">{{ comment.content }}</p>
+                <small class="text-muted">By {{ comment.user.email }} on {{ comment.createdAt|date('Y-m-d H:i') }}</small>
+            </div>
+        </div>
+    {% else %}
+        <p>No comments yet.</p>
+    {% endfor %}
+
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <h3>Add a Comment</h3>
+        {{ form_start(commentForm) }}
+            {{ form_row(commentForm.content) }}
+            {{ form_row(commentForm.save) }}
+        {{ form_end(commentForm) }}
+    {% else %}
+        <p><a href="{{ path('app_login') }}">Log in</a> to comment.</p>
+    {% endif %}
+
+    <a href="{{ path('app_blog_index') }}" class="btn btn-secondary">Back to list</a>
+{% endblock %}

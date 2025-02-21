@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create New Blog{% endblock %}
+
+{% block body %}
+    <h1>Create New Blog</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.description) }}
+        {{ form_widget(form._token) }} {# CSRF token field #}
+        {{ form_row(form.save) }}
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_blog_index') }}" class="btn btn-secondary">Back to list</a>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blog List{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Dashboard</h1>
+
+        <div class="profile-section d-flex align-items-center">
+            <span class="me-3">Logged in as: <strong>{{ app.user.name }}</strong></span>
+            <a href="{{ path('app_profile') }}" class="btn btn-secondary btn-sm me-2">Edit Profile</a>
+            <a href="{{ path('app_logout') }}" class="btn btn-danger btn-sm">Logout</a>
+        </div>
+    </div>
+
+    <a href="{{ path('app_blog_new') }}" class="btn btn-primary mb-3">Create New Blog</a>
+
+    {% if blogs is empty %}
+        <p>No blog posts available.</p>
+    {% else %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for blog in blogs %}
+                    <tr>
+                        <td>
+                            {% if blog.image %}
+                                <img src="{{ asset('uploads/blog/' ~ blog.image) }}" alt="Blog Image" width="100">
+                            {% else %}
+                                No Image
+                            {% endif %}
+                        </td>
+                        <td>{{ blog.title }}</td>
+                        <td>{{ blog.description|length > 50 ? blog.description|slice(0, 50) ~ '...' : blog.description }}</td>
+                        <td>{{ blog.createdAt|date('Y-m-d H:i') }}</td>
+                        <td>
+                            <a href="{{ path('app_blog_show', {'id': blog.id}) }}" class="btn btn-info btn-sm">View</a>
+                            <a href="{{ path('app_blog_edit', {'id': blog.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                            <form method="post" action="{{ path('app_blog_delete', {'id': blog.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ blog.id) }}">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}
